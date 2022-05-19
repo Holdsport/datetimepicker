@@ -1,66 +1,73 @@
-import React from 'react';
+import renderer from 'react-test-renderer';
 import DatePicker from '../src/index.js';
-import RNDateTimePickerIOS from '../src/picker.ios';
 import AndroidDateTimePicker from '../src/datetimepicker.android';
-import {render, fireEvent, waitFor} from '@testing-library/react-native';
-import {EVENT_TYPE_SET} from '../src/constants';
-
-const DATE = 1376949600000;
-
-const renderPicker = async (props) => {
-  const utils = render(<DatePicker value={new Date(DATE)} {...props} />);
-  await waitFor(() => utils.UNSAFE_getByType(DatePicker));
-  return utils;
-};
+import React from 'react';
 
 describe('DatePicker', () => {
-  it('renders a native Component', async () => {
-    const {toJSON} = await renderPicker();
+  const DATE = 1376949600000;
 
-    expect(toJSON()).toMatchSnapshot();
+  it('renders a native Component', () => {
+    const tree = renderer
+      .create(<DatePicker value={new Date(DATE)} />)
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
   });
 
-  it('will pass timestamp to native Component', async () => {
+  it('will pass timestamp to native Component', () => {
     const date = new Date(156e10);
-    const {toJSON} = await renderPicker({
-      value: date,
-    });
+    const tree = renderer.create(<DatePicker value={date} />).toJSON();
 
-    expect(toJSON()).toHaveProperty('props.date', date.getTime());
+    expect(tree).toHaveProperty('props.date', date.getTime());
   });
 
-  it('calls onChange callback', async () => {
-    expect.assertions(4);
+  it('calls onChange callback', () => {
     const date = new Date(156e10);
 
     function onChange(event, dateArg) {
-      expect(event).toHaveProperty('type', EVENT_TYPE_SET);
+      expect(event).toHaveProperty('type', 'event');
       expect(event).toHaveProperty('nativeEvent');
       expect(event.nativeEvent).toHaveProperty('timestamp', date.getTime());
       expect(dateArg).toEqual(date);
     }
-    const {UNSAFE_getByType} = await renderPicker({onChange});
 
-    fireEvent(UNSAFE_getByType(RNDateTimePickerIOS), 'onChange', {
-      nativeEvent: {
-        timestamp: date.getTime(),
-      },
-    });
+    renderer
+      .create(<DatePicker value={date} onChange={onChange} />)
+      .getInstance()
+      ._onChange({
+        type: 'event',
+        nativeEvent: {
+          timestamp: date.getTime(),
+        },
+      });
   });
 
-  it.each([['time'], ['datetime'], ['countdown']])(
-    'renders with mode %s',
-    async (mode) => {
-      const {toJSON} = await renderPicker({
-        mode,
-      });
-      expect(toJSON()).toMatchSnapshot();
-    },
-  );
+  it('has default mode `date`', () => {
+    expect(DatePicker.defaultProps.mode).toEqual('date');
+  });
+
+  it('renders with mode `time`', () => {
+    const tree = renderer
+      .create(<DatePicker value={new Date(DATE)} mode="time" />)
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('renders with mode `datetime` (iOS only)', () => {
+    const tree = renderer
+      .create(<DatePicker value={new Date(DATE)} mode="datetime" />)
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('has reference to picker', () => {
+    expect(new DatePicker()._picker).toBeDefined();
+  });
 
   it.each([
-    [{value: 'bogus'}, '`value` prop must be an instance of Date object'],
-    [{}, 'A date or time must be specified as `value` prop'],
+    [{}, 'A date or time should be specified as `value`.'],
     [
       {display: 'calendar', mode: 'time', value: new Date()},
       'display: calendar and mode: time cannot be used together.',
@@ -76,16 +83,16 @@ describe('DatePicker', () => {
     },
   );
 
-  it('applies styling to DatePicker', async () => {
+  it('applies styling to DatePicker', () => {
     const style = {backgroundColor: 'red'};
-    const {toJSON} = await renderPicker({
-      style,
-    });
-    const snapshot = toJSON();
-    expect(snapshot).toHaveProperty('props.style', [
+    const tree = renderer
+      .create(<DatePicker style={style} value={new Date(DATE)} />)
+      .toJSON();
+
+    expect(tree).toHaveProperty('props.style', [
       {height: 216},
       {backgroundColor: 'red'},
     ]);
-    expect(snapshot).toMatchSnapshot();
+    expect(tree).toMatchSnapshot();
   });
 });

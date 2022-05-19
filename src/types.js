@@ -3,41 +3,30 @@
  * @flow strict-local
  */
 
-import type {SyntheticEvent} from 'react-native/Libraries/Types/CoreEventTypes';
-import type {HostComponent} from 'react-native';
-import type {ViewProps} from 'react-native/Libraries/Components/View/ViewPropTypes';
+import type {SyntheticEvent} from 'CoreEventTypes';
+import type {NativeComponent} from 'ReactNative';
+import type {ViewProps} from 'ViewPropTypes';
 import type {ElementRef} from 'react';
-import type {ColorValue} from 'react-native/Libraries/StyleSheet/StyleSheet';
-import {
-  ANDROID_MODE,
-  ANDROID_DISPLAY,
-  DAY_OF_WEEK,
-  IOS_DISPLAY,
-  IOS_MODE,
-  WINDOWS_MODE,
-  ANDROID_EVT_TYPE,
-} from './constants';
+import type {ColorValue} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import {ANDROID_MODE, DISPLAY, DAY_OF_WEEK} from './constants';
 
-export type IOSDisplay = $Keys<typeof IOS_DISPLAY>;
-export type IOSMode = $Keys<typeof IOS_MODE>;
+type IOSMode = 'date' | 'time' | 'datetime' | 'countdown';
 type AndroidMode = $Keys<typeof ANDROID_MODE>;
-type WindowsMode = $Keys<typeof WINDOWS_MODE>;
-type Display = $Keys<typeof ANDROID_DISPLAY>;
-type AndroidEvtTypes = $Keys<typeof ANDROID_EVT_TYPE>;
+type Display = $Keys<typeof DISPLAY>;
 type MinuteInterval = ?(1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30);
 
-export type NativeEventIOS = SyntheticEvent<{|
-  timestamp: number,
-|}>;
+export type Event = SyntheticEvent<
+  $ReadOnly<{|
+    timestamp: number,
+  |}>,
+>;
 
-export type DateTimePickerEvent = {
-  type: AndroidEvtTypes,
-  nativeEvent: {
+export type AndroidEvent = {|
+  type: string,
+  nativeEvent: {|
     timestamp?: number,
-    ...
-  },
-  ...
-};
+  |},
+|};
 
 type BaseOptions = {|
   /**
@@ -51,7 +40,7 @@ type BaseOptions = {|
    * This is called when the user changes the date or time in the UI.
    * The first argument is an Event, the second a selected Date.
    */
-  onChange?: ?(event: DateTimePickerEvent, date?: Date) => void,
+  onChange?: ?(event: Event, date?: Date) => void,
 |};
 
 type DateOptions = {|
@@ -118,29 +107,6 @@ export type IOSNativeProps = $ReadOnly<{|
    * The date picker text color.
    */
   textColor?: ?ColorValue,
-
-  /**
-   * The date picker accent color.
-   *
-   * Sets the color of the selected, date and navigation icons.
-   * Has no effect for display 'spinner'.
-   */
-  accentColor?: ?ColorValue,
-
-  /**
-   * Override theme variant used by iOS native picker
-   */
-  themeVariant?: 'dark' | 'light',
-
-  /**
-   * Sets the preferredDatePickerStyle for picker
-   */
-  display?: IOSDisplay,
-
-  /**
-   * Is this picker enabled?
-   */
-  enabled: boolean,
 |}>;
 
 export type AndroidNativeProps = $ReadOnly<{|
@@ -159,20 +125,12 @@ export type AndroidNativeProps = $ReadOnly<{|
   display: Display,
 
   /**
-   * Timezone offset in minutes.
-   *
-   * By default, the date picker will use the device's timezone. With this
-   * parameter, it is possible to force a certain timezone offset. For
-   * instance, to show times in Pacific Standard Time, pass -7 * 60.
-   */
-  timeZoneOffsetInMinutes?: ?number,
-  /**
    * The interval at which minutes can be selected.
    */
   minuteInterval?: MinuteInterval,
 
+  onChange: (event: AndroidEvent, date?: Date) => void,
   neutralButtonLabel?: string,
-  onError?: (Error) => void,
 |}>;
 
 export type DatePickerOptions = {|
@@ -195,7 +153,7 @@ export type DateTimePickerResult = $ReadOnly<{|
   minute: number,
 |}>;
 
-export type RCTDateTimePickerNative = Class<HostComponent<IOSNativeProps>>;
+export type RCTDateTimePickerNative = Class<NativeComponent<IOSNativeProps>>;
 export type NativeRef = {
   current: ElementRef<RCTDateTimePickerNative> | null,
 };
@@ -208,7 +166,7 @@ export type WindowsDatePickerChangeEvent = {|
 
 export type WindowsNativeProps = $ReadOnly<{|
   ...BaseProps,
-  mode: WindowsMode,
+  onChange?: (event: WindowsDatePickerChangeEvent, date: Date) => void,
 
   placeholderText?: string,
   dateFormat?:
@@ -220,7 +178,7 @@ export type WindowsNativeProps = $ReadOnly<{|
     | '{dayofweek.abbreviated(2)}'
     | '{dayofweek.abbreviated(3)}'
     | '{dayofweek.full}',
-  firstDayOfWeek?: typeof DAY_OF_WEEK,
+  firstDayOfWeek?: DAY_OF_WEEK,
   timeZoneOffsetInSeconds?: number,
   is24Hour?: boolean,
   minuteInterval?: number,

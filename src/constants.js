@@ -2,42 +2,26 @@
  * @format
  * @flow strict-local
  */
-export const MIN_MS = 60000;
+export const MODE_DATE = 'date';
+export const MODE_TIME = 'time';
+export const MODE_DATETIME = 'datetime';
 
-export const ANDROID_DISPLAY = Object.freeze({
-  default: 'default',
+export const DISPLAY_DEFAULT = 'default';
+export const DISPLAY_SPINNER = 'spinner';
+export const DISPLAY_CLOCK = 'clock';
+export const DISPLAY_CALENDAR = 'calendar';
+
+// TODO vonovak potentially replace the above string consts with this object
+export const DISPLAY = Object.freeze({
   spinner: 'spinner',
+  default: 'default',
   clock: 'clock',
   calendar: 'calendar',
 });
 
-export const EVENT_TYPE_SET = 'set';
-export const ANDROID_EVT_TYPE = Object.freeze({
-  set: EVENT_TYPE_SET,
-  neutralButtonPressed: 'neutralButtonPressed',
-  dismissed: 'dismissed',
-});
-
-export const IOS_DISPLAY = Object.freeze({
-  default: 'default',
-  spinner: 'spinner',
-  compact: 'compact',
-  inline: 'inline',
-});
-
-const COMMON_MODES = Object.freeze({
+export const ANDROID_MODE = Object.freeze({
   date: 'date',
   time: 'time',
-});
-
-export const ANDROID_MODE = COMMON_MODES;
-
-export const WINDOWS_MODE = COMMON_MODES;
-
-export const IOS_MODE = Object.freeze({
-  ...COMMON_MODES,
-  datetime: 'datetime',
-  countdown: 'countdown',
 });
 
 export const DAY_OF_WEEK = Object.freeze({

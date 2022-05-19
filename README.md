@@ -1,36 +1,16 @@
-### 🚧🚧 Looking for collaborators and backers 🚧🚧
-
-See this [issue](https://github.com/react-native-datetimepicker/datetimepicker/issues/313).
-
-### Backers
-
-Support us with a monthly donation and help us continue our activities. [Become a backer on OpenCollective](https://opencollective.com/react-native-datetimepicker) or [sponsor us on GitHub Sponsors](https://github.com/sponsors/react-native-datetimepicker).
-
-<a href="https://opencollective.com/react-native-datetimepicker/donate" target="_blank">
-  <img src="https://opencollective.com/react-native-datetimepicker/backers.svg?width=890" width=890 />
-</a>
-
 # React Native DateTimePicker
 
-This repository was moved out of the react native community GH organization, in accordance to [this proposal](https://github.com/react-native-community/discussions-and-proposals/issues/176).
-The module is still published on `npm` under the old namespace (as documented) but will be published under a new namespace at some point, with a major version bump.
-
-![CircleCI Status][circle-ci-status]
+[![CircleCI Status][circle-ci-badge]][circle-ci-status]
 ![Supports Android and iOS][support-badge]
 ![MIT License][license-badge]
 [![Lean Core Badge][lean-core-badge]][lean-core-issue]
 
-React Native date & time picker component for iOS, Android and Windows.
-
-## Screenshots
-
-<details>
-  <summary>Expand for screenshots</summary>
+React Native date & time picker component for iOS and Android
 
 <table>
   <tr><td colspan=2><strong>iOS</strong></td></tr>
   <tr>
-    <td><p align="center"><img src="./docs/images/ios_date_new.png" height="420"/></p></td>
+    <td><p align="center"><img src="./docs/images/ios_date.png" width="260" height="420"/></p></td>
     <td><p align="center"><img src="./docs/images/ios_time.png" width="260" height="420"/></p></td>
   </tr>
   <tr><td colspan=2><strong>Android</strong></td></tr>
@@ -48,52 +28,47 @@ React Native date & time picker component for iOS, Android and Windows.
   </tr>
 </table>
 
-</details>
-
-## Table of contents
+## Table of Contents
 
 - [React Native DateTimePicker](#react-native-datetimepicker)
-  - [Table of contents](#table-of-contents)
-  - [Expo users notice](#expo-users-notice)
+  - [Table of Contents](#table-of-contents)
   - [Getting started](#getting-started)
-  - [Usage](#usage)
-  - [Localization note](#localization-note)
-  - [Android imperative API](#android-imperative-api)
-  - [Props / params](#component-props--params-of-the-android-imperative-api)
+    - [RN >= 0.60](#rn--060)
+    - [RN < 0.60](#rn--060-1)
+  - [General Usage](#general-usage)
+    - [Basic usage with state](#basic-usage-with-state)
+  - [Props](#props)
     - [`mode` (`optional`)](#mode-optional)
-    - [`display` (`optional`)](#display-optional)
+    - [`display` (`optional`, `Android only`)](#display-optional-android-only)
     - [`onChange` (`optional`)](#onchange-optional)
     - [`value` (`required`)](#value-required)
     - [`maximumDate` (`optional`)](#maximumdate-optional)
     - [`minimumDate` (`optional`)](#minimumdate-optional)
-    - [`timeZoneOffsetInMinutes` (`optional`, `iOS or Android only`)](#timezoneoffsetinminutes-optional-ios-and-android-only)
+    - [`timeZoneOffsetInMinutes` (`optional`, `iOS only`)](#timezoneoffsetinminutes-optional-ios-only)
     - [`timeZoneOffsetInSeconds` (`optional`, `Windows only`)](#timezoneoffsetinsecond-optional-windows-only)
     - [`dayOfWeekFormat` (`optional`, `Windows only`)](#dayOfWeekFormat-optional-windows-only)
     - [`dateFormat` (`optional`, `Windows only`)](#dateFormat-optional-windows-only)
     - [`firstDayOfWeek` (`optional`, `Windows only`)](#firstDayOfWeek-optional-windows-only)
     - [`textColor` (`optional`, `iOS only`)](#textColor-optional-ios-only)
-    - [`accentColor` (`optional`, `iOS only`)](#accentColor-optional-ios-only)
-    - [`themeVariant` (`optional`, `iOS only`)](#themevariant-optional-ios-only)
     - [`locale` (`optional`, `iOS only`)](#locale-optional-ios-only)
     - [`is24Hour` (`optional`, `Windows and Android only`)](#is24hour-optional-windows-and-android-only)
     - [`neutralButtonLabel` (`optional`, `Android only`)](#neutralbuttonlabel-optional-android-only)
     - [`minuteInterval` (`optional`)](#minuteinterval-optional)
     - [`style` (`optional`, `iOS only`)](#style-optional-ios-only)
-    - [`disabled` (`optional`, `iOS only`)](#disabled-optional-ios-only)
-    - [`onError` (`optional`, `Android only`)](#onError-optional-android-only)
   - [Migration from the older components](#migration-from-the-older-components)
+    - [DatePickerIOS](#datepickerios)
+    - [DatePickerAndroid](#datepickerandroid)
+    - [TimePickerAndroid](#timepickerandroid)
   - [Contributing to the component](#contributing-to-the-component)
   - [Manual installation](#manual-installation)
+    - [iOS](#ios)
+    - [Android](#android)
+    - [Windows](#windows)
   - [Running the example app](#running-the-example-app)
 
 ## Requirements
 
-- Only Android API level >=21 (Android 5), iOS >= 11 are supported.
-- Tested with Xcode 13.0 and RN 0.66.3. Other configurations are very likely to work as well but have not been tested.
-
-## Expo users notice
-
-This module is part of Expo - [see docs](https://docs.expo.io/versions/latest/sdk/date-time-picker/). However, Expo SDK may not contain the latest version of the module and therefore, the newest features and bugfixes may not be available in Expo. Use the command `expo install @react-native-community/datetimepicker` (not `yarn` or `npm`) to install this module - Expo will automatically install the latest version compatible with your Expo SDK (which may _not_ be the latest version of the module available).
+- Xcode >= 10
 
 ## Getting started
 
@@ -107,84 +82,55 @@ or
 yarn add @react-native-community/datetimepicker
 ```
 
-Autolinking is not yet implemented on Windows, so [manual installation ](/docs/manual-installation.md) is needed.
+Autolinking is not yet implemented on Windows, so [Manual installation](#windows) is needed.
 
 #### RN >= 0.60
 
 If you are using RN >= 0.60, only run `npx pod-install`. Then rebuild your project.
 
-## Usage
+#### RN < 0.60
+
+For RN < 0.60, you need to link the dependency using `react-native link`:
+
+```bash
+react-native link @react-native-community/datetimepicker
+```
+
+Then run `npx pod-install` and rebuild your project.
+
+If this does not work, see [Manual installation](#manual-installation).
+
+## General Usage
 
 ```js
 import DateTimePicker from '@react-native-community/datetimepicker';
 ```
 
-<details>
-  <summary>Expand for examples</summary>
-
-We give two equivalent examples on how to use the package on all supported platforms.
-
-### Recommended imperative api usage on Android
-
-While the component-approach as given in the second paragraph works on Android, the recommended approach is to use the imperative api given in the first paragraph.
-
-Read more about the motivation in [Android imperative API](#android-imperative-api).
+or
 
 ```js
-export const App = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: date,
-      onChange,
-      mode: currentMode,
-      is24Hour: true
-    })
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  return (
-    <View>
-      <View>
-        <Button onPress={showDatepicker} title="Show date picker!" />
-      </View>
-      <View>
-        <Button onPress={showTimepicker} title="Show time picker!" />
-      </View>
-      <Text>selected: {date.toLocaleString()}</Text>
-    </View>
-  );
-}
+const DateTimePicker = require('@react-native-community/datetimepicker');
 ```
 
-### Component usage on iOS / Android / Windows
+### Basic usage with state
 
 ```js
+import React, {useState} from 'react';
+import {View, Button, Platform} from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 export const App = () => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
     setDate(currentDate);
   };
 
-  const showMode = (currentMode) => {
+  const showMode = currentMode => {
     setShow(true);
     setMode(currentMode);
   };
@@ -205,63 +151,26 @@ export const App = () => {
       <View>
         <Button onPress={showTimepicker} title="Show time picker!" />
       </View>
-      <Text>selected: {date.toLocaleString()}</Text>
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
           mode={mode}
           is24Hour={true}
+          display="default"
           onChange={onChange}
         />
       )}
     </View>
   );
-}
+};
 ```
 
-</details>
-
-
-## Localization note
-
-By localization, we refer to the language (names of months and days), as well as order in which date can be presented in a picker (month/day vs. day/month) and 12 / 24 hour-format.
-
-On Android, the picker will be controlled by the system locale. If you wish to change it, [see instructions here](https://stackoverflow.com/a/2900144/2070942).
-
-On iOS, use XCode, as [documented here](https://developer.apple.com/documentation/xcode/adding-support-for-languages-and-regions) to inform the OS about the locales your application supports. iOS will automatically display the correctly localized DateTimePicker as long as the target language is contained in `project.pbxproj`.
-
-> If you use a library like [i18next](https://github.com/i18next/react-i18next) or [react-localize-redux](https://github.com/ryandrewjohnson/react-localize-redux) to manage your translations, it is sufficient to add your target languages as described in the Apple Documentation - but you are not required to add any localization keys (like, for example, the days of the week). iOS will automatically display the correct localized strings as long as the target language is contained in `project.pbxproj`.
-
-For testing your localization setup, refer [here](https://developer.apple.com/documentation/xcode/testing-localizations-when-running-your-app).
-
-There is also the iOS-only locale prop that can be used to force locale in some cases but its usage is discouraged due to [not working robustly in all picker modes](./docs/images/ios_date_new.png) (note the mixed month and day names). To the best of our knowledge, it works reliably in the `spinner` mode.
-
-For Expo, follow the [localization docs](https://docs.expo.dev/distribution/app-stores/#localizing-your-ios-app).
-
-
-### Android imperative api
-
-On Android, you have a choice between using the component API (regular React component) or an imperative api (think something like `ReactNative.alert()`).
-
-While the component API has the benefit of writing the same code on all platforms, for start we recommend to use the imperative API on Android.
-
-The `params` is an object with the same properties as the component props documented in the next paragraph. (This is also because the component api internally uses the imperative one.)
-
-```js
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-
-DateTimePickerAndroid.open(params: AndroidNativeProps)
-DateTimePickerAndroid.dismiss(mode: AndroidNativeProps['mode'])
-```
-
-Reason we recommend the imperative API is: on Android, the date/time picker opens in a dialog, similar to `ReactNative.alert()` from core react native. The imperative api models this behavior better than the declarative component api. While the component approach is perfectly functional, based on the issue tracker history, it appears to be more prone to introducing bugs.
-
-## Component props / params of the Android imperative api
+## Props
 
 > Please note that this library currently exposes functionality from [`UIDatePicker`](https://developer.apple.com/documentation/uikit/uidatepicker?language=objc) on iOS and [DatePickerDialog](https://developer.android.com/reference/android/app/DatePickerDialog) + [TimePickerDialog](https://developer.android.com/reference/android/app/TimePickerDialog) on Android, and [`CalendarDatePicker`](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/calendar-date-picker) +[TimePicker](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.timepicker?view=winrt-19041) on Windows.
 >
-> These native classes offer only limited configuration, while there are dozens of possible options you as a developer may need. It follows that if your requirement is not supported by the backing native views, this library will _not_ be able to implement your requirement. When you open an issue with a feature request, please document if (or how) the feature can be implemented using the aforementioned native views. If the native views do not support what you need, such feature requests will be closed as not actionable.
+> These native classes offer only limited configuration, while there are dozens of possible options you as a developer may need. It follows that if your requirement is not supported by the backing native views, this library will _not_ be able to implement your requirement. When you open an issue with a feature request, please document if (or how) the feature can be implemented using the aforementioned native views. If those views do not support what you need, such feature requests will be closed as not actionable.
 
 #### `mode` (`optional`)
 
@@ -278,23 +187,16 @@ List of possible values:
 <RNDateTimePicker mode="time" />
 ```
 
-#### `display` (`optional`)
+#### `display` (`optional`, `Android only`)
 
-Defines the visual display of the picker. The default value is `"default"`.
+Defines the visual display of the picker for Android and will be ignored for iOS.
 
-List of possible values for Android
+List of possible values:
 
-- `"default"` - Show a default date picker (spinner/calendar/clock) based on `mode` and Android version.
+- `"default"` - Show a default date picker (spinner/calendar/clock) based on `mode` and android version.
 - `"spinner"`
 - `"calendar"` (only for `date` mode)
 - `"clock"` (only for `time` mode)
-
-List of possible values for iOS (maps to [preferredDatePickerStyle](https://developer.apple.com/documentation/uikit/uidatepicker/3526124-preferreddatepickerstyle?changes=latest_minor&language=objc))
-
-- `"default"` - Automatically pick the best style available for the current platform & mode.
-- `"spinner"` - the usual appearance with a wheel from which you choose values
-- `"compact"` - Affects only iOS 14 and later. Will fall back to "spinner" if not supported.
-- `"inline"` - Affects only iOS 14 and later. Will fall back to "spinner" if not supported.
 
 ```js
 <RNDateTimePicker display="spinner" />
@@ -336,10 +238,9 @@ Defines the minimum date that can be selected. Note that on Android, this only w
 <RNDateTimePicker minimumDate={new Date(1950, 0, 1)} />
 ```
 
-#### `timeZoneOffsetInMinutes` (`optional`, `iOS and Android only`)
+#### `timeZoneOffsetInMinutes` (`optional`, `iOS only`)
 
-Allows changing of the timeZone of the date picker. By default, it uses the device's time zone.
-We strongly recommend avoiding this prop on android because of known issues in the implementation (eg. [#528](https://github.com/react-native-datetimepicker/datetimepicker/issues/528)).
+Allows changing of the timeZone of the date picker. By default it uses the device's time zone.
 
 ```js
 // GMT+1
@@ -384,36 +285,15 @@ Indicates which day is shown as the first day of the week.
 
 #### `textColor` (`optional`, `iOS only`)
 
-Allows changing of the textColor of the date picker. Has effect only when `display` is `"spinner"`.
+Allows changing of the textColor of the date picker.
 
 ```js
 <RNDateTimePicker textColor="red" />
 ```
 
-#### `accentColor` (`optional`, `iOS only`)
-
-Allows changing the accentColor (tintColor) of the date picker.
-Has no effect when `display` is `"spinner"`.
-
-#### `themeVariant` (`optional`, `iOS only`)
-
-Allows overriding system theme variant (dark or light mode) used by the date picker.
-
-:warning: Has effect only on iOS 14 and later. On iOS 13 & less, use `textColor` to make the picker dark-theme compatible
-
-List of possible values:
-
-- `"light"`
-- `"dark"`
-
-```js
-<RNDateTimePicker themeVariant="light" />
-```
-
 #### `locale` (`optional`, `iOS only`)
 
-Allows changing the locale of the component. This affects the displayed text and the date / time formatting. By default, the device's locale is used. Please note using this prop is discouraged due to not working reliably in all picker modes.
-Prefer localization as documented in [Localization note](#localization-note).
+Allows changing of the locale of the component. By default it uses the device's locale.
 
 ```js
 <RNDateTimePicker locale="es-ES" />
@@ -421,7 +301,7 @@ Prefer localization as documented in [Localization note](#localization-note).
 
 #### `is24Hour` (`optional`, `Windows and Android only`)
 
-Allows changing of the time picker to a 24 hour format. By default, this value is decided automatcially based on the locale and other preferences.
+Allows changing of the time picker to a 24 hour format. By default, this value is decided automatcially based on the user's chosen locale and other preferences.
 
 ```js
 <RNDateTimePicker is24Hour={true} />
@@ -441,9 +321,7 @@ Pressing button can be observed in onChange handler as `event.type === 'neutralB
 The interval at which minutes can be selected.
 Possible values are: `1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30`
 
-On Windows, this can be any number between 0-59.
-
-on iOS, this in only supported when `display="spinner"`
+(On Windows, this can be any number between 0-59.)
 
 ```js
 <RNDateTimePicker minuteInterval={10} />
@@ -451,28 +329,240 @@ on iOS, this in only supported when `display="spinner"`
 
 #### `style` (`optional`, `iOS only`)
 
-Sets style directly on picker component. By default, the picker height is determined based on the `display` prop.
+Sets style directly on picker component. By default, the picker height is fixed to 216px.
 
 Please note that by default, picker's text color is controlled by the application theme (light / dark mode). In dark mode, text is white and in light mode, text is black.
 
-This means that eg. if the device has dark mode turned on, and your screen background color is white, you will not see the picker. Please use the `Appearance` api to adjust the picker's background color so that it is visible, as we do in the [example App](/example/App.js).
-Alternatively, use the `themeVariant` prop or [opt-out from dark mode (discouraged)](https://stackoverflow.com/a/56546554/2070942).
+This means that eg. if the device has dark mode turned on, and your screen background color is white, you will not see the picker. Please use the `Appearance` api to adjust the picker's background color so that it is visible, as we do in the [example App](/example/App.js) or [opt-out from dark mode](https://stackoverflow.com/a/56546554/2070942).
 
 ```js
 <RNDateTimePicker style={{flex: 1}} />
 ```
 
-#### `disabled` (`optional`, `iOS only`)
-
-If true, the user won't be able to interact with the view.
-
-#### `onError` (`optional`, `Android only`)
-
-Callback that is called when an error occurs inside the date picker native code (such as null activity).
-
 ## Migration from the older components
 
-Please see [migration.md](/docs/migration.md)
+`RNDateTimePicker` is the new common name used to represent the old versions of iOS and Android.
+
+On Android, open picker modals will update the selected date and/or time if the prop `value` changes. For example, if a HOC holding state, updates the `value` prop. Previously the component used to close the modal and render a new one on consecutive calls.
+
+### DatePickerIOS
+
+- `initialDate` is deprecated, use `value` instead.
+
+  ```js
+  // Before
+  <DatePickerIOS initialValue={new Date()} />
+  ```
+
+  ```js
+  // Now
+  <RNDateTimePicker value={new Date()} />
+  ```
+
+- `date` is deprecated, use `value` instead.
+
+  ```js
+  // Before
+  <DatePickerIOS date={new Date()} />
+  ```
+
+  ```js
+  // Now
+  <RNDateTimePicker value={new Date()} />
+  ```
+
+- `onChange` now returns also the date.
+
+  ```js
+  // Before
+  onChange = event => {};
+  <DatePickerIOS onChange={this.onChange} />;
+  ```
+
+  ```js
+  // Now
+  onChange = (event, date) => {};
+  <RNDateTimePicker onChange={this.onChange} />;
+  ```
+
+- `onDateChange` is deprecated, use `onChange` instead.
+
+  ```js
+  // Before
+  setDate = date => {};
+  <DatePickerIOS onDateChange={this.setDate} />;
+  ```
+
+  ```js
+  // Now
+  setDate = (event, date) => {};
+  <RNDateTimePicker onChange={this.setDate} />;
+  ```
+
+### DatePickerAndroid
+
+- `date` is deprecated, use `value` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, year, month, day} = await DatePickerAndroid.open({
+      date: new Date(),
+    });
+  } catch ({code, message}) {
+    console.warn('Cannot open date picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  <RNDateTimePicker mode="date" value={new Date()} />
+  ```
+
+- `minDate` and `maxDate` are deprecated, use `minimumDate` and `maximumDate` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, year, month, day} = await DatePickerAndroid.open({
+      minDate: new Date(),
+      maxDate: new Date(),
+    });
+  } catch ({code, message}) {
+    console.warn('Cannot open date picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  <RNDateTimePicker
+    mode="date"
+    minimumDate={new Date()}
+    maximumDate={new Date()}
+  />
+  ```
+
+- `dateSetAction` is deprecated, use `onChange` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, year, month, day} = await DatePickerAndroid.open();
+    if (action === DatePickerAndroid.dateSetAction) {
+      // Selected year, month (0-11), day
+    }
+  } catch ({code, message}) {
+    console.warn('Cannot open date picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  setDate = (event, date) => {
+    if (date !== undefined) {
+      // timeSetAction
+    }
+  };
+  <RNDateTimePicker mode="date" onChange={this.setDate} />;
+  ```
+
+- `dismissedAction` is deprecated, use `onChange` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, year, month, day} = await DatePickerAndroid.open();
+    if (action === DatePickerAndroid.dismissedAction) {
+      // Dismissed
+    }
+  } catch ({code, message}) {
+    console.warn('Cannot open date picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  setDate = (event, date) => {
+    if (date === undefined) {
+      // dismissedAction
+    }
+  };
+  <RNDateTimePicker mode="date" onChange={this.setDate} />;
+  ```
+
+### TimePickerAndroid
+
+- `hour` and `minute` are deprecated, use `value` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, hour, minute} = await TimePickerAndroid.open({
+      hour: 14,
+      minute: 0,
+      is24Hour: false, // Will display '2 PM'
+    });
+    if (action !== TimePickerAndroid.dismissedAction) {
+      // Selected hour (0-23), minute (0-59)
+    }
+  } catch ({code, message}) {
+    console.warn('Cannot open time picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  // It will use the hour and minute defined in date
+  <RNDateTimePicker mode="time" value={new Date()} />
+  ```
+
+- `timeSetAction` is deprecated, use `onChange` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, hour, minute} = await TimePickerAndroid.open();
+    if (action === TimePickerAndroid.timeSetAction) {
+      // Selected hour (0-23), minute (0-59)
+    }
+  } catch ({code, message}) {
+    console.warn('Cannot open time picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  setTime = (event, date) => {
+    if (date !== undefined) {
+      // Use the hour and minute from the date object
+    }
+  };
+  <RNDateTimePicker mode="time" onChange={this.setTime} />;
+  ```
+
+- `dismissedAction` is deprecated, use `onChange` instead.
+
+  ```js
+  // Before
+  try {
+    const {action, hour, minute} = await TimePickerAndroid.open();
+    if (action === TimePickerAndroid.dismissedAction) {
+      // Dismissed
+    }
+  } catch ({code, message}) {
+    console.warn('Cannot open time picker', message);
+  }
+  ```
+
+  ```js
+  // Now
+  setTime = (event, date) => {
+    if (date === undefined) {
+      // dismissedAction
+    }
+  };
+  <RNDateTimePicker mode="time" onChange={this.setTime} />;
+  ```
 
 ## Contributing to the component
 
@@ -480,20 +570,119 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Manual installation
 
-Please see [manual-installation.md](/docs/manual-installation.md)
+#### iOS
+
+1. Install CocoaPods, here the [installation guide](https://guides.cocoapods.org/using/getting-started.html).
+2. Inside the iOS folder run `pod init`, this will create the initial `pod` file.
+3. Update your `pod` file to look like the following ( Remember to replace `MyApp` with your target name ):
+
+   ```ruby
+   # Allowed sources
+   source 'https://github.com/CocoaPods/Specs.git'
+
+   target 'MyApp' do
+     # As we use Swift, ensure that `use_frameworks` is enabled.
+     use_frameworks!
+
+     # Specific iOS platform we are targetting
+     platform :ios, '8.0'
+
+     # Point to the installed version
+     pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec'
+
+     # React/React-Native specific pods
+     pod 'React', :path => '../node_modules/react-native', :subspecs => [
+       'Core',
+       'CxxBridge',      # Include this for RN >= 0.47
+       'DevSupport',     # Include this to enable In-App Devmenu if RN >= 0.43
+       'RCTText',
+       'RCTNetwork',
+       'RCTWebSocket',   # Needed for debugging
+     ]
+
+     # Explicitly include Yoga if you are using RN >= 0.42.0
+     pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+     # Third party deps podspec link
+     pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+     pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+     pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+   end
+   ```
+
+4. Run `pod install` inside the same folder where the `pod` file was created
+5. `npm run start`
+6. `npm run start:ios`
+
+#### Android
+
+1. Add the following lines to `android/settings.gradle`:
+
+   ```gradle
+   include ':@react-native-community_datetimepicker'
+   project(':@react-native-community_datetimepicker').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/datetimepicker/android')
+   ```
+
+2. Add the compile line to the dependencies in `android/app/build.gradle`:
+
+   ```gradle
+   dependencies {
+       ...
+       implementation project(':@react-native-community_datetimepicker')
+   }
+   ```
+
+3. Add the import and link the package in `MainApplication.java`:
+
+   ```diff
+   + import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
+
+   public class MainApplication extends Application implements ReactApplication {
+
+     @Override
+     protected List<ReactPackage> getPackages() {
+       @SuppressWarnings("UnnecessaryLocalVariable")
+       List<ReactPackage> packages = new PackageList(this).getPackages();
+       // Packages that cannot be autolinked yet can be added manually here, for example:
+   +   packages.add(new RNDateTimePickerPackage());
+       return packages;
+     }
+   }
+   ```
+
+#### Windows
+
+##### Add the DateTimePickerWindows project to your solution
+
+1. Open the solution in Visual Studio 2019
+2. Right-click solution icon in Solution Explorer > Add > Existing Project
+   Select 'D:\pathToYourApp\node_modules\@react-native-community\datetimepicker\windows\DateTimePickerWindows\DateTimePickerWindows.vcxproj'
+
+##### **windows/myapp.sln**
+
+Add a reference to `DateTimePickerWindows` to your main application project. From Visual Studio 2019:
+
+Right-click main application project > Add > Reference...
+Check 'DateTimePickerWindows' from the 'Project > Solution' tab on the left.
+
+##### **pch.h**
+
+Add `#include "winrt/DateTimePicker.h"`.
+
+##### **app.cpp**
+
+Add `PackageProviders().Append(winrt::DateTimePicker::ReactPackageProvider());` before `InitializeComponent();`.
 
 ## Running the example app
 
-1. Run `yarn` in repo root
-2. Run `cd example`
-3. Install required pods by running `npx pod-install`
-4. Run `yarn start` to start Metro Bundler
-5. Run `yarn run start:ios` or `yarn run start:android` or `yarn run start:windows`
-6. To do any development on the library, open the example project (in the `example` folder) in xCode or Android Studio. The example project depends on the library code, which you can edit and observe any changes in the example project.
+1. Install required pods in `example/ios` by running `npx pod-install`
+1. Run `npm start` to start Metro Bundler
+1. Run `npm run start:ios` or `npm run start:android` or `npm run start:windows` (or `yarn run start:windows`)
 
 [circle-ci-badge]: https://img.shields.io/circleci/project/github/react-native-community/datetimepicker/master.svg?style=flat-square
-[circle-ci-status]: https://circleci.com/gh/react-native-datetimepicker/datetimepicker.svg?style=svg
-[support-badge]: https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20windows-lightgrey.svg?style=flat-square
+[circle-ci-status]: https://circleci.com/gh/react-native-community/workflows/react-native-datetimepicker/tree/master
+[support-badge]: https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg?style=flat-square
 [license-badge]: https://img.shields.io/npm/l/@react-native-community/slider.svg?style=flat-square
 [lean-core-badge]: https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg?style=flat-square
 [lean-core-issue]: https://github.com/facebook/react-native/issues/23313

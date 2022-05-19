@@ -12,9 +12,6 @@ module.exports = {
     jest: true,
     jasmine: true,
     waitFor: true,
-    detoxCircus: true,
-  },
-  rules: {
-    'no-var': 2,
-  },
+    detoxCircus: true
+  }
 };

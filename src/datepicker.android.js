@@ -7,7 +7,7 @@
  * @format
  * @flow strict-local
  */
-import {DATE_SET_ACTION, DISMISS_ACTION, ANDROID_DISPLAY} from './constants';
+import {DISPLAY_DEFAULT, DATE_SET_ACTION, DISMISS_ACTION} from './constants';
 import {NativeModules} from 'react-native';
 import {toMilliseconds} from './utils';
 
@@ -37,13 +37,9 @@ export default class DatePickerAndroid {
    */
   static async open(options: DatePickerOptions): Promise<DateTimePickerResult> {
     toMilliseconds(options, 'value', 'minimumDate', 'maximumDate');
-    options.display = options.display || ANDROID_DISPLAY.default;
+    options.display = options.display || DISPLAY_DEFAULT;
 
     return NativeModules.RNDatePickerAndroid.open(options);
-  }
-
-  static async dismiss(): Promise<boolean> {
-    return NativeModules.RNDatePickerAndroid.dismiss();
   }
 
   /**

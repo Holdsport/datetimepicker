@@ -4,11 +4,11 @@
  */
 import DatePickerAndroid from './datepicker';
 import TimePickerAndroid from './timepicker';
-import {ANDROID_MODE} from './constants';
+import {MODE_DATE, MODE_TIME} from './constants';
 
 const pickers = {
-  [ANDROID_MODE.date]: DatePickerAndroid,
-  [ANDROID_MODE.time]: TimePickerAndroid,
+  [MODE_DATE]: DatePickerAndroid,
+  [MODE_TIME]: TimePickerAndroid,
 };
 
 export default pickers;

@@ -4,9 +4,7 @@ import {NativeMethods, ViewProps} from 'react-native';
 type IOSMode = 'date' | 'time' | 'datetime' | 'countdown';
 type AndroidMode = 'date' | 'time';
 type Display = 'spinner' | 'default' | 'clock' | 'calendar';
-type IOSDisplay = 'default' | 'compact' | 'inline' | 'spinner';
 type MinuteInterval = 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30;
-type DAY_OF_WEEK = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type Event = SyntheticEvent<
   Readonly<{
@@ -14,10 +12,8 @@ export type Event = SyntheticEvent<
   }>
 >;
 
-export type EvtTypes = 'set' | 'neutralButtonPressed' | 'dismissed';
-
-export type DateTimePickerEvent = {
-  type: EvtTypes;
+export type AndroidEvent = {
+  type: string;
   nativeEvent: {
     timestamp?: number;
   };
@@ -35,7 +31,7 @@ type BaseOptions = {
    * This is called when the user changes the date or time in the UI.
    * The first argument is an Event, the second a selected Date.
    */
-  onChange?: (event: DateTimePickerEvent, date?: Date) => void;
+  onChange?: (event: Event, date?: Date) => void;
 };
 
 type DateOptions = BaseOptions & {
@@ -97,29 +93,6 @@ export type IOSNativeProps = Readonly<
      * The date picker text color.
      */
     textColor?: string;
-
-    /**
-     * The date picker accent color.
-     *
-     * Sets the color of the selected, date and navigation icons.
-     * Has no effect for display 'spinner'.
-     */
-    accentColor?: string;
-
-    /**
-     * Override theme variant used by iOS native picker
-     */
-    themeVariant?: 'dark' | 'light';
-
-    /**
-     * Sets the preferredDatePickerStyle for picker
-     */
-    display?: IOSDisplay;
-
-    /**
-     * Is this picker disabled?
-     */
-    disabled?: boolean;
   }
 >;
 
@@ -142,12 +115,8 @@ export type AndroidNativeProps = Readonly<
        */
       minuteInterval?: MinuteInterval;
 
+      onChange?: (event: AndroidEvent, date?: Date) => void;
       neutralButtonLabel?: string;
-
-      /**
-       * callback when an error occurs inside the date picker native code (such as null activity)
-       */
-      onError?: (arg: Error) => void;
     }
 >;
 
@@ -159,45 +128,20 @@ export type TimePickerOptions = TimeOptions & {
   display?: Display;
 };
 
+export type DateTimePickerResult = Readonly<{
+  action: ('timeSetAction' | 'dateSetAction' | 'dismissedAction') | null;
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+}>;
+
 export type RCTDateTimePickerNative = NativeMethods;
 export type NativeRef = {
   current: Ref<RCTDateTimePickerNative> | null;
 };
 
-export type WindowsNativeProps = Readonly<
-  BaseProps &
-    DateOptions &
-    TimeOptions & {
-      /**
-       * The display options.
-       */
-      display?: Display;
-
-      placeholderText?: string;
-      dateFormat?:
-        | 'day month year'
-        | 'dayofweek day month'
-        | 'longdate'
-        | 'shortdate';
-      dayOfWeekFormat?:
-        | '{dayofweek.abbreviated(2)}'
-        | '{dayofweek.abbreviated(3)}'
-        | '{dayofweek.full}';
-      firstDayOfWeek?: DAY_OF_WEEK;
-      timeZoneOffsetInSeconds?: number;
-      is24Hour?: boolean;
-      minuteInterval?: number;
-    }
->;
-
-declare namespace DateTimePickerAndroidType {
-  const open: (args: AndroidNativeProps) => void;
-  const dismiss: (mode: AndroidNativeProps['mode']) => void;
-}
-
-declare const RNDateTimePicker: FC<
-  IOSNativeProps | AndroidNativeProps | WindowsNativeProps
->;
+declare const RNDateTimePicker: FC<IOSNativeProps | AndroidNativeProps>;
 
 export default RNDateTimePicker;
-export const DateTimePickerAndroid: typeof DateTimePickerAndroidType;

@@ -7,14 +7,8 @@
 'use strict';
 
 import {requireNativeComponent, StyleSheet} from 'react-native';
-import type {
-  WindowsNativeProps,
-  WindowsDatePickerChangeEvent,
-  DateTimePickerEvent,
-} from './types';
+import type {WindowsNativeProps, WindowsDatePickerChangeEvent} from './types';
 import * as React from 'react';
-import {EVENT_TYPE_SET, WINDOWS_MODE} from './constants';
-import {sharedPropsValidation} from './utils';
 
 const styles = StyleSheet.create({
   rnDatePicker: {
@@ -28,11 +22,7 @@ const RNDateTimePickerWindows = requireNativeComponent(
 );
 const RNTimePickerWindows = requireNativeComponent('RNTimePickerWindows');
 
-export default function RNDateTimePickerQWE(
-  props: WindowsNativeProps,
-): React.Node {
-  sharedPropsValidation({value: props?.value});
-
+export default function RNDateTimePickerQWE(props: WindowsNativeProps) {
   const localProps = {
     dayOfWeekFormat: props.dayOfWeekFormat,
     dateFormat: props.dateFormat,
@@ -46,29 +36,20 @@ export default function RNDateTimePickerQWE(
   };
 
   const _onChange = (event: WindowsDatePickerChangeEvent) => {
-    const {onChange} = props;
-    const unifiedEvent: DateTimePickerEvent = {
-      ...event,
-      nativeEvent: {...event.nativeEvent, timestamp: event.nativeEvent.newDate},
-      type: EVENT_TYPE_SET,
-    };
-
-    onChange && onChange(unifiedEvent, new Date(event.nativeEvent.newDate));
+    props.onChange &&
+      props.onChange(event, new Date(event.nativeEvent.newDate));
   };
 
-  const timezoneOffsetInSeconds = (() => {
-    // The Date object returns timezone in minutes. Convert that to seconds
-    // and multiply by -1 so that the offset can be added to UTC+0 time to get
-    // the correct value on the native side.
-    if (timezoneOffsetInSeconds == null && props.value != null) {
-      return -60 * props.value.getTimezoneOffset();
-    }
-    return props.timeZoneOffsetInSeconds;
-  })();
-  const {mode} = props;
+  // The Date object returns timezone in minutes. Convert that to seconds
+  // and multiply by -1 so that the offset can be added to UTC+0 time to get
+  // the correct value on the native side.
+  let timezoneOffsetInSeconds = props.timeZoneOffsetInSeconds;
+  if (timezoneOffsetInSeconds == null && props.value != null) {
+    timezoneOffsetInSeconds = -60 * props.value.getTimezoneOffset();
+  }
 
   // 'date' is the default mode
-  if (mode === WINDOWS_MODE.date || mode == null) {
+  if (props.mode === 'date' || props.mode == null) {
     return (
       <RNDateTimePickerWindows
         {...localProps}
@@ -76,7 +57,7 @@ export default function RNDateTimePickerQWE(
         timeZoneOffsetInSeconds={timezoneOffsetInSeconds}
       />
     );
-  } else if (mode === WINDOWS_MODE.time) {
+  } else if (props.mode === 'time') {
     return (
       <RNTimePickerWindows
         style={props.style}
@@ -86,8 +67,5 @@ export default function RNDateTimePickerQWE(
         onChange={_onChange}
       />
     );
-  } else {
-    console.error(`RNDateTimePicker: unknown mode ${mode}`);
-    return null;
   }
 }
