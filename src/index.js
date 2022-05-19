@@ -1,5 +1,5 @@
 import RNDateTimePicker from './datetimepicker';
 export {DateTimePickerAndroid} from './DateTimePickerAndroid';
-export {DatePickerAndroid} from './DatePickerAndroid';
+export {DatePickerAndroid} from './datepicker';
 
 export default RNDateTimePicker;
