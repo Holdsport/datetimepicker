@@ -5,6 +5,8 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
+    namespace "com.reactcommunity.rndatetimepicker"
+  
     compileSdkVersion safeExtGet('compileSdkVersion', 26)
     buildToolsVersion safeExtGet('buildToolsVersion', '26.0.3')
 
